@@ -103,6 +103,9 @@ class _CoursePageState extends State<CoursePage>
                   } else {
                     videoController = VideoPlayerController.networkUrl(
                         Uri.parse(curriculum.onlineVideoLink));
+                    //TODO: ganti link file
+                    // videoController = VideoPlayerController.networkUrl(
+                    //     Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'));
                   }
                   videoController.initialize();
                 });
@@ -148,6 +151,7 @@ class _CoursePageState extends State<CoursePage>
                                             index,
                                             curriculum.offlineVideoLink,
                                             curriculum.id));
+                                    //TODO: Ganti link file
                                     // context.read<CourseBloc>().add(
                                     //     CourseDownloadVideo(
                                     //         index,
