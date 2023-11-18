@@ -1,30 +1,31 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+import 'dart:io';
 
+import 'package:bloc_test/bloc_test.dart';
+import 'package:course_test_app/screens/course_page/bloc/course_bloc.dart';
+import 'package:course_test_app/screens/course_page/course_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
 
-import 'package:course_test_app/main.dart';
+@GenerateNiceMocks([MockSpec<MockTestCourseBloc>()])
+class MockTestCourseBloc extends MockBloc<CourseEvent, CourseState>
+    implements CourseBloc {}
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
-
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  setUpAll(() {
+    HttpOverrides.global = null;
+  });
+  testWidgets('loads the course page', (tester) async {
+    var courseBloc = CourseBloc();
+    await tester.pumpWidget(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: BlocProvider(
+        create: (context) => courseBloc,
+        child: const CoursePage(),
+      ),
+    ));
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    await tester.pump(Duration(seconds: 75));
   });
 }

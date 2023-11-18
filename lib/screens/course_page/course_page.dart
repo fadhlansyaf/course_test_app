@@ -177,31 +177,38 @@ class _CoursePageState extends State<CoursePage>
                                   value: progress,
                                 ),
                               )
-                        : Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 10),
-                            decoration: BoxDecoration(
-                                border: Border.all(width: 0.3),
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Tersimpan',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12),
+                        : Row(
+                          children: [
+                            Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.3),
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Tersimpan',
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Icon(
+                                      Icons.check_circle_outline,
+                                      color: Colors.blue,
+                                    )
+                                  ],
                                 ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Icon(
-                                  Icons.check_circle_outline,
-                                  color: Colors.blue,
-                                )
-                              ],
-                            ),
-                          )
+                              ),
+                            IconButton(onPressed: (){
+                              context.read<CourseBloc>().add(CourseDeleteVideo(curriculum.filePath, index));
+                            }, icon: Icon(Icons.delete, color: Colors.red,)),
+                          ],
+                        )
                   ],
                 ),
               ),
@@ -247,7 +254,6 @@ class _CoursePageState extends State<CoursePage>
                   courseModel.curriculum[selectedIndex].onlineVideoLink));
             }
             videoController.initialize();
-            videoController.initialize();
           });
         }
         if (state is CourseDownloading) {
@@ -266,6 +272,15 @@ class _CoursePageState extends State<CoursePage>
             var downloadedIndex = getProgressIndex(state.index);
             downloadingIndex.removeAt(downloadedIndex);
             courseModel.curriculum[state.index].filePath = state.savedPath;
+          });
+        }
+        if(state is CourseDeleted) {
+          setState(() {
+            courseModel.curriculum[state.deletedIndex].filePath = '';
+            if(state.deletedIndex == selectedIndex){
+              videoController = VideoPlayerController.networkUrl(Uri.parse(courseModel.curriculum[state.deletedIndex].onlineVideoLink));
+              videoController.initialize();
+            }
           });
         }
         if (state is CourseError) {
@@ -307,7 +322,7 @@ class _CoursePageState extends State<CoursePage>
                                     Padding(
                                       padding:
                                           const EdgeInsets.only(bottom: 22.5),
-                                      child: VideoPlayer(videoController),
+                                      child: VideoPlayer(videoController, key: Key('videoPlayer'),),
                                     ),
                                     Center(
                                       child: !(videoController.value.isPlaying)

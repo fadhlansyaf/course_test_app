@@ -12,3 +12,14 @@ class CourseDownloadVideo extends CourseEvent {
 
   CourseDownloadVideo(this.index, this.link, this.id);
 }
+
+class CourseDeleteVideo extends CourseEvent {
+  final String path;
+  final int index;
+
+  CourseDeleteVideo(this.path, this.index);
+}
+
+class CourseMock extends CourseEvent {
+
+}

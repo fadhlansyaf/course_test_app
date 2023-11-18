@@ -27,5 +27,11 @@ class CourseDownloaded extends CourseState {
   CourseDownloaded(this.index, this.savedPath);
 }
 
+class CourseDeleted extends CourseState {
+  final int deletedIndex;
+
+  CourseDeleted(this.deletedIndex);
+}
+
 class CourseError extends CourseState {}
 
